@@ -1,31 +1,4 @@
 package com.qa.opencart.factory;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.RandomStringUtils;
-import org.apache.logging.log4j.LogManager;
-
-import org.apache.logging.log4j.Logger;
-import org.openqa.selenium.OutputType;
-import org.openqa.selenium.TakesScreenshot;
-import org.openqa.selenium.WebDriver;
-
-import org.openqa.selenium.chrome.ChromeDriver;
-
-import org.openqa.selenium.chrome.ChromeOptions;
-
-import org.openqa.selenium.edge.EdgeDriver;
-
-import org.openqa.selenium.edge.EdgeOptions;
-
-import org.openqa.selenium.firefox.FirefoxDriver;
-
-import org.openqa.selenium.firefox.FirefoxOptions;
-
-import org.openqa.selenium.ie.InternetExplorerDriver;
-
-import org.openqa.selenium.ie.InternetExplorerOptions;
-import org.openqa.selenium.io.FileHandler;
-
-import com.qa.opencart.utils.Constants;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -37,230 +10,238 @@ import java.util.Date;
 import java.util.Properties;
 import java.util.ResourceBundle;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.RandomStringUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.openqa.selenium.OutputType;
+import org.openqa.selenium.TakesScreenshot;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.edge.EdgeDriver;
+import org.openqa.selenium.edge.EdgeOptions;
+import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.firefox.FirefoxOptions;
+import org.openqa.selenium.ie.InternetExplorerDriver;
+import org.openqa.selenium.ie.InternetExplorerOptions;
+
+import com.qa.opencart.utils.Constants;
+
 public class WebDriverFactory {
 
-	 private static final Logger log = LogManager.getLogger(WebDriverFactory.class.getName());
-	 public ResourceBundle rb;// to read config.properties
-	 public static String highlight;
+	private static final Logger log = LogManager.getLogger(WebDriverFactory.class.getName());
+	public ResourceBundle rb;// to read config.properties
+	public static String highlight;
 	// Singleton
 
-    // Only one instance of the class can exist at a time
+	// Only one instance of the class can exist at a time
 
-    private static final WebDriverFactory instance = new WebDriverFactory();
+	private static final WebDriverFactory instance = new WebDriverFactory();
 
-    private WebDriverFactory() {
+	private WebDriverFactory() {
 
-    }
+	}
 
-    public static WebDriverFactory getInstance() {
+	public static WebDriverFactory getInstance() {
 
-        return instance;
+		return instance;
 
-    }
+	}
 
-    private static ThreadLocal<WebDriver> tlDriver = new ThreadLocal<WebDriver>();
-    
+	private static ThreadLocal<WebDriver> tlDriver = new ThreadLocal<WebDriver>();
 
-    /***
+	/***
+	 * 
+	 * Get driver instance based on the browser type
+	 * 
+	 * @param browser
+	 * 
+	 * @return
+	 * @throws IOException
+	 * 
+	 */
 
-     * Get driver instance based on the browser type
+	public WebDriver getDriver(String browser) throws IOException {
+		rb = ResourceBundle.getBundle("config");// Load config.properties
+		WebDriver driver = null;
+		// highlight = readPropertyValue("highlight");
+		highlight = rb.getString("highlight");
+		if (tlDriver.get() == null) {
 
-     * @param browser
+			try {
 
-     * @return
-     * @throws IOException 
+				if (browser.equalsIgnoreCase(Constants.FIREFOX)) {
 
-     */
+					FirefoxOptions ffOptions = setFFOptions();
 
-    public WebDriver getDriver(String browser) throws IOException {
-    	rb = ResourceBundle.getBundle("config");// Load config.properties
-        WebDriver driver = null;
-      //  highlight = readPropertyValue("highlight");
-        highlight = rb.getString("highlight");
-          if (tlDriver.get() == null) {
+					driver = new FirefoxDriver(ffOptions);
 
-            try {
+					tlDriver.set(driver);
 
-                if (browser.equalsIgnoreCase(Constants.FIREFOX)) {
+				} else if (browser.equalsIgnoreCase(Constants.CHROME)) {
 
-                    FirefoxOptions ffOptions = setFFOptions();
+					ChromeOptions chromeOptions = setChromeOptions();
 
-                    driver = new FirefoxDriver(ffOptions);
+					driver = new ChromeDriver(chromeOptions);
 
-                    tlDriver.set(driver);
+					tlDriver.set(driver);
 
-                }else if (browser.equalsIgnoreCase(Constants.CHROME)) {
+				} else if (browser.equalsIgnoreCase(Constants.IE)) {
 
-                    ChromeOptions chromeOptions = setChromeOptions();
+					InternetExplorerOptions ieOptions = setIEOptions();
 
-                    driver = new ChromeDriver(chromeOptions);
+					driver = new InternetExplorerDriver(ieOptions);
 
-                    tlDriver.set(driver);
+					tlDriver.set(driver);
 
-                }else if (browser.equalsIgnoreCase(Constants.IE)) {
+				} else if (browser.equalsIgnoreCase(Constants.EDGE)) {
 
-                    InternetExplorerOptions ieOptions = setIEOptions();
+					EdgeOptions edgeopt = setEdgeOptions();
 
-                    driver = new InternetExplorerDriver(ieOptions);
+					driver = new EdgeDriver(edgeopt);
 
-                    tlDriver.set(driver);
+				} else if (browser.equalsIgnoreCase("headless")) {
+					ChromeOptions coptions = getChromeOptions();
+					driver = new ChromeDriver(coptions);
+					tlDriver.set(driver);
+				} else if (browser.equalsIgnoreCase("incognito")) {
+					ChromeOptions coptions = getChromeOptions();
+					driver = new ChromeDriver(coptions);
+					tlDriver.set(driver);
+				} else {
+					ChromeOptions chromeOptions = setChromeOptions();
 
-                }else if(browser.equalsIgnoreCase(Constants.EDGE)) {
+					driver = new ChromeDriver(chromeOptions);
 
-                	EdgeOptions edgeopt=setEdgeOptions();
+					tlDriver.set(driver);
+				}
 
-                	driver = new EdgeDriver(edgeopt);
+			} catch (Exception e) {
 
-                }else if(browser.equalsIgnoreCase("headless")) {
-                	ChromeOptions coptions=getChromeOptions();
-                	driver = new ChromeDriver(coptions);
-                    tlDriver.set(driver);
-                }else if(browser.equalsIgnoreCase("incognito")) {
-                	ChromeOptions coptions=getChromeOptions();
-                	driver = new ChromeDriver(coptions);
-                    tlDriver.set(driver);
-                }              
-                else {
-                	ChromeOptions chromeOptions = setChromeOptions();
+				e.printStackTrace();
 
-                    driver = new ChromeDriver(chromeOptions);
+			}
+			log.info("clear the cache/cookies ");
+			getDriver().manage().deleteAllCookies();
+			log.info("adding implicit wait ");
+			getDriver().manage().timeouts().implicitlyWait(Duration.ofSeconds(Constants.IMPLICIT_WAIT));
+			log.info("maximize the window");
+			getDriver().manage().window().maximize();
 
-                    tlDriver.set(driver);
-                }
+		}
 
-            } catch (Exception e) {
+		return getDriver();
 
-                e.printStackTrace();
-
-            }
-            log.info("clear the cache/cookies ");
-            getDriver().manage().deleteAllCookies();
-            log.info("adding implicit wait ");
-            getDriver().manage().timeouts().implicitlyWait(Duration.ofSeconds(Constants.IMPLICIT_WAIT));
-            log.info("maximize the window");
-            getDriver().manage().window().maximize();
-
-        }
-
-        return getDriver();
-
-    }
+	}
 
 	public synchronized static WebDriver getDriver() {
 		return tlDriver.get();
 	}
 
-     /***
+	/***
+	 * 
+	 * Quit driver instance
+	 * 
+	 */
 
-     * Quit driver instance
+	public void quitDriver() {
 
-     */
+		getDriver().quit();
 
-    public void quitDriver() {
+		tlDriver.set(null);
 
-        getDriver().quit();
+	}
 
-        tlDriver.set(null);
+	/***
+	 * 
+	 * Set Chrome Options
+	 * 
+	 * @return options
+	 * 
+	 */
 
-    }
+	private ChromeOptions setChromeOptions() {
 
+		ChromeOptions options = new ChromeOptions();
 
+		options.addArguments("disable-infobars");
 
-    /***
+		options.setAcceptInsecureCerts(true);
 
-     * Set Chrome Options
+		return options;
 
-     * @return options
+	}
 
-     */
+	/***
+	 * 
+	 * Set Firefox Options
+	 * 
+	 * @return options
+	 * 
+	 */
 
-    private ChromeOptions setChromeOptions() {
+	private FirefoxOptions setFFOptions() {
 
-        ChromeOptions options = new ChromeOptions();
+		FirefoxOptions options = new FirefoxOptions();
 
-        options.addArguments("disable-infobars");
+		options.addArguments("disable-infobars");
 
-        options.setAcceptInsecureCerts(true);
+		options.setAcceptInsecureCerts(true);
 
-        return options;
+		return options;
 
-    }
+	}
 
+	/***
+	 * 
+	 * Set EdgeOptions
+	 * 
+	 * @return options
+	 * 
+	 */
 
+	private EdgeOptions setEdgeOptions() {
 
-    /***
+		EdgeOptions options = new EdgeOptions();
 
-     * Set Firefox Options
+		options.addArguments("disable-infobars");
 
-     * @return options
+		options.setAcceptInsecureCerts(true);
 
-     */
+		return options;
 
-    private FirefoxOptions setFFOptions() {
+	}
 
-        FirefoxOptions options = new FirefoxOptions();
+	/***
+	 * 
+	 * Set Internet Explorer Options
+	 * 
+	 * @return options
+	 * 
+	 */
 
-        options.addArguments("disable-infobars");
+	private InternetExplorerOptions setIEOptions() {
 
-        options.setAcceptInsecureCerts(true);
+		InternetExplorerOptions options = new InternetExplorerOptions();
 
-        return options;
+		options.setCapability(InternetExplorerDriver.ENABLE_PERSISTENT_HOVERING, false);
 
-    }
+		options.setCapability(InternetExplorerDriver.REQUIRE_WINDOW_FOCUS, false);
 
+		options.setCapability(InternetExplorerDriver.IE_ENSURE_CLEAN_SESSION, true);
 
+		options.setCapability(InternetExplorerDriver.IGNORE_ZOOM_SETTING, true);
 
-    /***
+		options.setCapability(InternetExplorerDriver.
 
-     * Set EdgeOptions
+				INTRODUCE_FLAKINESS_BY_IGNORING_SECURITY_DOMAINS, true);
 
-     * @return options
+		return options;
 
-     */
+	}
 
-    private EdgeOptions setEdgeOptions() {
-
-    	EdgeOptions options = new EdgeOptions();
-
-        options.addArguments("disable-infobars");
-
-        options.setAcceptInsecureCerts(true);
-
-        return options;
-
-    }
-
-    
-
-    /***
-
-     * Set Internet Explorer Options
-
-     * @return options
-
-     */
-
-    private InternetExplorerOptions setIEOptions() {
-
-        InternetExplorerOptions options = new InternetExplorerOptions();
-
-        options.setCapability(InternetExplorerDriver.ENABLE_PERSISTENT_HOVERING, false);
-
-        options.setCapability(InternetExplorerDriver.REQUIRE_WINDOW_FOCUS, false);
-
-        options.setCapability(InternetExplorerDriver.IE_ENSURE_CLEAN_SESSION, true);
-
-        options.setCapability(InternetExplorerDriver.IGNORE_ZOOM_SETTING, true);
-
-        options.setCapability(InternetExplorerDriver.
-
-                INTRODUCE_FLAKINESS_BY_IGNORING_SECURITY_DOMAINS, true);
-
-        return options;
-
-    }
-    
-    public ChromeOptions getChromeOptions() throws IOException {
+	public ChromeOptions getChromeOptions() throws IOException {
 		ChromeOptions coptions = new ChromeOptions();
 		if (Boolean.parseBoolean(readPropertyValue("headless"))) {
 			System.out.println(".....Running the test in Headless mode.......");
@@ -285,19 +266,18 @@ public class WebDriverFactory {
 		}
 		return ffoptions;
 	}
+
 	/**
-
-	 * This method reads the property value from properties file
-
 	 * 
-
+	 * This method reads the property value from properties file
+	 * 
+	 * 
+	 * 
 	 * @param key
-
+	 * 
 	 * @return
-
+	 * 
 	 */
-
-
 
 	public static String readPropertyValue(String key) throws IOException {
 
@@ -334,18 +314,20 @@ public class WebDriverFactory {
 		String generatedString2 = RandomStringUtils.randomNumeric(10);
 		return (generatedString2);
 	}
+
 	public static String randomAlphaNumeric() {
 		String st = RandomStringUtils.randomAlphabetic(4);
 		String num = RandomStringUtils.randomNumeric(3);
-		
-		return (st+"@"+num);
+
+		return (st + "@" + num);
 	}
+
 	public static String getScreenshot(String tname) throws IOException {
 
 		String timeStamp = new SimpleDateFormat("yyyyMMddhhmmss").format(new Date());
 		TakesScreenshot takesScreenshot = (TakesScreenshot) getDriver();
 		File source = takesScreenshot.getScreenshotAs(OutputType.FILE);
-		String destination = Constants.USER_DIRECTORY  + "\\screenshot\\" + tname + "_" + timeStamp + ".png";
+		String destination = Constants.USER_DIRECTORY + "\\screenshot\\" + tname + "_" + timeStamp + ".png";
 
 		try {
 			FileUtils.copyFile(source, new File(destination));
@@ -355,7 +337,5 @@ public class WebDriverFactory {
 		return destination;
 
 	}
-
-
 
 }

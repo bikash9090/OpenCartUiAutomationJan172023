@@ -1,4 +1,5 @@
 package com.qa.opencart.factory;
+
 import java.io.IOException;
 import java.time.Duration;
 import java.util.ResourceBundle;
@@ -24,7 +25,7 @@ import com.qa.opencart.utils.Constants;
 
 public class TestBase {
 	public HomePage homePg;
-	public RegistrationPage regPg; 
+	public RegistrationPage regPg;
 	public LoginPage loginPg;
 	public LogoutPage logoutPg;
 	public MyAccountPage myaccountPg;
@@ -35,15 +36,15 @@ public class TestBase {
 	public ResourceBundle rb;// to read config.properties
 	public WebDriverWait wait;
 	private static final Logger log = LogManager.getLogger(TestBase.class.getName());
-	
-	@Parameters({"browser"})
+
+	@Parameters({ "browser" })
 	@BeforeClass
 	public void commonSetUp(@Optional("firefox") String browser) throws IOException {
 		rb = ResourceBundle.getBundle("config");// Load config.properties
 		log.debug("setting the driver");
-		
+
 		driver = WebDriverFactory.getInstance().getDriver(browser);
-		
+
 		log.info("create object for WebDriverWait class");
 
 		wait = new WebDriverWait(driver, Duration.ofSeconds(Constants.EXPLICIT_WAIT));
@@ -52,11 +53,7 @@ public class TestBase {
 
 		driver.get(rb.getString("appUrl"));
 
-
-
 	}
-
-
 
 	@AfterClass
 
@@ -68,13 +65,8 @@ public class TestBase {
 
 			WebDriverFactory.getInstance().quitDriver();
 
-
-
 		}
-
-
 
 	}
 
 }
-
