@@ -39,37 +39,35 @@ public class RegistrationTest extends TestBase {
 	String postcode;
 	String country;
 	String state;
-	
-	
+
 	@BeforeClass
 	public void setupRegData() {
-	Faker fkobj=new Faker(new Locale("en-US"));
-	fname=fkobj.address().firstName();
-	lname=fkobj.address().lastName();
-	//email=fkobj.internet().emailAddress();
-	telephone=fkobj.phoneNumber().cellPhone();
-	fax=fkobj.phoneNumber().phoneNumber();
-	compName=fkobj.company().name();
-	addr1=fkobj.address().buildingNumber();
-	addr2=fkobj.address().latitude();
-	city=fkobj.address().city();
-	postcode=fkobj.address().zipCode();
-	System.out.println("postcode is:"+postcode);
-	country="United States";
-	System.out.println("country is:"+country);
-	state=fkobj.address().state();
-	System.out.println("country state is:"+state);
-	
+		Faker fkobj = new Faker(new Locale("en-US"));
+		fname = fkobj.address().firstName();
+		lname = fkobj.address().lastName();
+		// email=fkobj.internet().emailAddress();
+		telephone = fkobj.phoneNumber().cellPhone();
+		fax = fkobj.phoneNumber().phoneNumber();
+		compName = fkobj.company().name();
+		addr1 = fkobj.address().buildingNumber();
+		addr2 = fkobj.address().latitude();
+		city = fkobj.address().city();
+		postcode = fkobj.address().zipCode();
+		System.out.println("postcode is:" + postcode);
+		country = "United States";
+		System.out.println("country is:" + country);
+		state = fkobj.address().state();
+		System.out.println("country state is:" + state);
+
 	}
-	
-	
+
 	@BeforeClass
 	public void beforeClass() throws InterruptedException {
 		log.info("initialising the page class objects");
 		homePg = new HomePage(driver);
 		regPg = new RegistrationPage(driver);
 		myaccountPg = new MyAccountPage(driver);
-		logoutPg=new LogoutPage(driver); 
+		logoutPg = new LogoutPage(driver);
 	}
 
 	@BeforeMethod
@@ -84,7 +82,7 @@ public class RegistrationTest extends TestBase {
 	private String getRandomEmail() {
 		return WebDriverFactory.randomeString() + "@gmail.com";
 	}
-	
+
 	@Test
 	public void registrationTest() throws InterruptedException {
 		try {
@@ -103,7 +101,7 @@ public class RegistrationTest extends TestBase {
 			regPg.setTelePhone(telephone);
 			String pwd = WebDriverFactory.randomAlphaNumeric();
 			log.info("Entering the Address details ....");
-					 
+
 			regPg.fillAddressDetails(compName, addr1, addr2, city, postcode, country, state);
 			log.info("setting the password value is:" + pwd);
 			regPg.setPassword(pwd);
@@ -121,56 +119,52 @@ public class RegistrationTest extends TestBase {
 			log.info("click on Account Created Continue button");
 			regPg.clickAccountCreatedContinueBtn();
 			myaccountPg.waitForPageLoad(2000);
-			
+
 		} catch (InterruptedException e) {
 			log.info("Account creation failed");
 			e.printStackTrace();
 		}
 
 	}
-	
-	
-	  @DataProvider public Object[][] regTestData() throws InvalidFormatException,
-	  IOException{ Object[][] data=new
-	  ExcelUtils().getTestData(Constants.TEST_DATA_FILE_PATH,
-	  Constants.REGISTER_SHEET_NAME); return data; }
-	  
-	  
-	  
-	  @Test(dataProvider="regTestData") 
-	  public void registrationDataDrivenTest(String fname,String lname,String
-	  telephone,String pwd,String subscribe) throws InterruptedException {
-	  log.info("setting the first name:" + fname); 
-	  regPg.setFirstName(fname);
-	  log.info("setting the last name:" + lname);
-	  regPg.setLastName(lname); 
-	  String email = getRandomEmail();
-	  log.info("setting the email:" + email);
-	  regPg.setEmail(email); 
-	  log.info("setting the telephone:" + telephone);
-	  regPg.setTelePhone(telephone); 
-	  regPg.fillAddressDetails(compName, addr1,
-	  addr2, city, postcode, country, state);
-	  log.info("setting the password value is:" + pwd);
-	  regPg.setPassword(pwd);
-	  regPg.setConfirmPassword(pwd); 
-	  log.info("select the subscribe option yes");
-	  regPg.selectSubScribe(subscribe);
-	  log.info("check the Privacy policy checkbox");
-	  regPg.checkAgreeCheckbox();
-	  log.info("Click on Continue button"); 
-	  regPg.clickContinueBtn();
-	  regPg.waitForPageLoad(2000);
-	  log.info("verify the Account Creation success message and  header ");
-	  Assert.assertEquals(regPg.getAccountCreatedHeader(),
-	  Constants.YOUR_ACCNT_CREATED_HEADER);
-	  Assert.assertEquals(regPg.getAccountCreatedSuccMsg(),
-	  Constants.YOUR_ACCNT_CREATED_SUCC_MSG);
-	  log.info("click on Account Created Continue button");
-	  regPg.clickAccountCreatedContinueBtn(); myaccountPg.waitForPageLoad(2000);
-	  
-	  }
-	 
+
+	@DataProvider
+	public Object[][] regTestData() throws InvalidFormatException, IOException {
+		Object[][] data = new ExcelUtils().getTestData(Constants.TEST_DATA_FILE_PATH, Constants.REGISTER_SHEET_NAME);
+		return data;
+	}
+
+	@Test(dataProvider = "regTestData")
+	public void registrationDataDrivenTest(String fname, String lname, String telephone, String pwd, String subscribe)
+			throws InterruptedException {
+		log.info("setting the first name:" + fname);
+		regPg.setFirstName(fname);
+		log.info("setting the last name:" + lname);
+		regPg.setLastName(lname);
+		String email = getRandomEmail();
+		log.info("setting the email:" + email);
+		regPg.setEmail(email);
+		log.info("setting the telephone:" + telephone);
+		regPg.setTelePhone(telephone);
+		regPg.fillAddressDetails(compName, addr1, addr2, city, postcode, country, state);
+		log.info("setting the password value is:" + pwd);
+		regPg.setPassword(pwd);
+		regPg.setConfirmPassword(pwd);
+		log.info("select the subscribe option yes");
+		regPg.selectSubScribe(subscribe);
+		log.info("check the Privacy policy checkbox");
+		regPg.checkAgreeCheckbox();
+		log.info("Click on Continue button");
+		regPg.clickContinueBtn();
+		regPg.waitForPageLoad(2000);
+		log.info("verify the Account Creation success message and  header ");
+		Assert.assertEquals(regPg.getAccountCreatedHeader(), Constants.YOUR_ACCNT_CREATED_HEADER);
+		Assert.assertEquals(regPg.getAccountCreatedSuccMsg(), Constants.YOUR_ACCNT_CREATED_SUCC_MSG);
+		log.info("click on Account Created Continue button");
+		regPg.clickAccountCreatedContinueBtn();
+		myaccountPg.waitForPageLoad(2000);
+
+	}
+
 	@AfterMethod
 	public void tearDown() throws InterruptedException {
 		log.info("validate the my Account Page title");
@@ -182,6 +176,5 @@ public class RegistrationTest extends TestBase {
 		log.info("Click on Continue button in Logout page");
 		logoutPg.clickContinueBtn();
 	}
-	
-	
+
 }

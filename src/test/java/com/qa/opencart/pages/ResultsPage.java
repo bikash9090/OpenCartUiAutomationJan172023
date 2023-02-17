@@ -12,34 +12,35 @@ import org.openqa.selenium.support.FindBy;
 import com.qa.opencart.utils.JavaScriptUtils;
 import com.qa.opencart.utils.WebDriverUtils;
 
-public class ResultsPage extends WebDriverUtils{
+public class ResultsPage extends WebDriverUtils {
 	private WebDriver driver;
-	private Logger log=LogManager.getLogger(ResultsPage.class.getName());
+	private Logger log = LogManager.getLogger(ResultsPage.class.getName());
 	JavaScriptUtils jsUtils;
+
 	public ResultsPage(WebDriver driver) {
 		super(driver);
-		this.driver=driver;
-		
+		this.driver = driver;
+
 	}
-	
-	@FindBy(css="div[class*='product-layout product-grid']")
+
+	@FindBy(css = "div[class*='product-layout product-grid']")
 	private List<WebElement> searchProducts;
-	@FindBy(css="ul.breadcrumb>li:nth-child(2)>a")
+	@FindBy(css = "ul.breadcrumb>li:nth-child(2)>a")
 	private WebElement searchBreadCrumb;
-	
+
 	public String getSearchResultsPageTitle(String productName) {
 		return waitForTitleContains(productName);
 	}
-	
+
 	public int getSearchProductsSize() {
 		return searchProducts.size();
 	}
-	
+
 	public ProductDetailsPage selectProduct(String productName) {
-		log.info("product name is:"+productName);
-		//xpath=//a[text()='"+linkname+"']
+		log.info("product name is:" + productName);
+		// xpath=//a[text()='"+linkname+"']
 		driver.findElement(By.linkText(productName)).click();
 		return new ProductDetailsPage(driver);
 	}
-	
+
 }

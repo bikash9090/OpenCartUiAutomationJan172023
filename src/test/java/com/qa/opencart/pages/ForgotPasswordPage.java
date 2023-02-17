@@ -9,54 +9,55 @@ import org.openqa.selenium.support.FindBy;
 import com.qa.opencart.utils.JavaScriptUtils;
 import com.qa.opencart.utils.WebDriverUtils;
 
-public class ForgotPasswordPage extends WebDriverUtils{
+public class ForgotPasswordPage extends WebDriverUtils {
 
-private Logger log=LogManager.getLogger(ForgotPasswordPage.class.getName());
-JavaScriptUtils jsUtils;
-public ForgotPasswordPage(WebDriver driver) {
-super(driver);
-jsUtils=new JavaScriptUtils(driver);
-}
+	private Logger log = LogManager.getLogger(ForgotPasswordPage.class.getName());
+	JavaScriptUtils jsUtils;
 
-@FindBy(css="div#content>h1")
-private WebElement forgotYourPasswordHeader;
+	public ForgotPasswordPage(WebDriver driver) {
+		super(driver);
+		jsUtils = new JavaScriptUtils(driver);
+	}
 
-@FindBy(xpath="//div[@id='content']/form/fieldset/legend")
-private WebElement yourEmailAddressText;
+	@FindBy(css = "div#content>h1")
+	private WebElement forgotYourPasswordHeader;
 
-@FindBy(css="#input-email")
-private WebElement emailAddressEditbox;
+	@FindBy(xpath = "//div[@id='content']/form/fieldset/legend")
+	private WebElement yourEmailAddressText;
 
-@FindBy(css="a.btn.btn-default")
-private WebElement backBtn;
+	@FindBy(css = "#input-email")
+	private WebElement emailAddressEditbox;
 
-@FindBy(xpath="//input[@class='btn btn-primary']")
-private WebElement forgotPageContinueBtn;
+	@FindBy(css = "a.btn.btn-default")
+	private WebElement backBtn;
 
-public boolean isForgotYourPasswordHeaderAvailable() {
-return isDisplayed(forgotYourPasswordHeader);
-}
+	@FindBy(xpath = "//input[@class='btn btn-primary']")
+	private WebElement forgotPageContinueBtn;
 
-public boolean isYourEmailAddressTextHeaderAvailable() {
-return isDisplayed(yourEmailAddressText);
-}
+	public boolean isForgotYourPasswordHeaderAvailable() {
+		return isDisplayed(forgotYourPasswordHeader);
+	}
 
-public void setEmailAddress(String email) throws InterruptedException {
-log.info("entering the email address");
-sendData(emailAddressEditbox,email);
-}
+	public boolean isYourEmailAddressTextHeaderAvailable() {
+		return isDisplayed(yourEmailAddressText);
+	}
 
-public void goToLoginPage() {
-log.info("click on back page");
-try {
-click(backBtn);
-}catch(InterruptedException e) {
-e.printStackTrace();
-}
-}
+	public void setEmailAddress(String email) throws InterruptedException {
+		log.info("entering the email address");
+		sendData(emailAddressEditbox, email);
+	}
 
-public void clickForgotPageContinueBtn() throws InterruptedException{
-log.info("click on continue");
-click(forgotPageContinueBtn);
-}
+	public void goToLoginPage() {
+		log.info("click on back page");
+		try {
+			click(backBtn);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void clickForgotPageContinueBtn() throws InterruptedException {
+		log.info("click on continue");
+		click(forgotPageContinueBtn);
+	}
 }

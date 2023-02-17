@@ -35,12 +35,12 @@ public class ProductDetailsPageTest extends TestBase {
 		loginPg = new LoginPage(driver);
 		myaccountPg = new MyAccountPage(driver);
 		logoutPg = new LogoutPage(driver);
-		resultPg=new ResultsPage(driver);
-		 productDetailPg=new ProductDetailsPage(driver);
+		resultPg = new ResultsPage(driver);
+		productDetailPg = new ProductDetailsPage(driver);
 		homePg.goToLoginPage();
 		log.info("first logging into the opencart website");
 		loginPg.doLogin(rb.getString("username"), rb.getString("pwd"));
-		
+
 	}
 
 	@BeforeMethod
@@ -49,57 +49,47 @@ public class ProductDetailsPageTest extends TestBase {
 	}
 
 	@DataProvider
-	public Object[][] getProductTestData(){
-		
-		return new Object[][] {
-			{"Macbook","MacBook Pro"},
-			{"Macbook","MacBook Air"},
-			{"iMac","iMac"},
-			{"Samsung","Samsung SyncMaster 941BW"},
-			{"Apple","Apple Cinema 30\""}
-			
+	public Object[][] getProductTestData() {
+
+		return new Object[][] { { "Macbook", "MacBook Pro" }, { "Macbook", "MacBook Air" }, { "iMac", "iMac" },
+				{ "Samsung", "Samsung SyncMaster 941BW" }, { "Apple", "Apple Cinema 30\"" }
+
 		};
 	}
-	
-	
-	@Test(dataProvider="getProductTestData")
-	public void productHeaderTest(String key,String productName) throws InterruptedException {
-		resultPg=myaccountPg.doProductSearch(key);
-		productDetailPg=resultPg.selectProduct(productName);
+
+	@Test(dataProvider = "getProductTestData")
+	public void productHeaderTest(String key, String productName) throws InterruptedException {
+		resultPg = myaccountPg.doProductSearch(key);
+		productDetailPg = resultPg.selectProduct(productName);
 		log.info("getting product header name in opencart website");
-		String productHeaderName=productDetailPg.getProductName();
+		String productHeaderName = productDetailPg.getProductName();
 		Assert.assertEquals(productHeaderName, productName);
 	}
-	
+
 	@DataProvider
-	public Object[][] getProductImagesTestData(){
-		
-		return new Object[][] {
-			{"Macbook","MacBook Pro",4},
-			{"Macbook","MacBook Air",4},
-			{"iMac","iMac",3},
-			{"Samsung","Samsung SyncMaster 941BW",1},
-			{"Apple","Apple Cinema 30\"",6}
-			
+	public Object[][] getProductImagesTestData() {
+
+		return new Object[][] { { "Macbook", "MacBook Pro", 4 }, { "Macbook", "MacBook Air", 4 }, { "iMac", "iMac", 3 },
+				{ "Samsung", "Samsung SyncMaster 941BW", 1 }, { "Apple", "Apple Cinema 30\"", 6 }
+
 		};
 	}
-	
-	
-	@Test(dataProvider="getProductImagesTestData")
-	public void productImagesTest(String key,String productName,int imgCount) throws InterruptedException {
-		resultPg=myaccountPg.doProductSearch(key);
-		productDetailPg=resultPg.selectProduct(productName);
+
+	@Test(dataProvider = "getProductImagesTestData")
+	public void productImagesTest(String key, String productName, int imgCount) throws InterruptedException {
+		resultPg = myaccountPg.doProductSearch(key);
+		productDetailPg = resultPg.selectProduct(productName);
 		log.info("getting product image count for particular searched product in opencart website");
-		int actProductImageCount=productDetailPg.getProductImageCount();
+		int actProductImageCount = productDetailPg.getProductImageCount();
 		Assert.assertEquals(actProductImageCount, imgCount);
 	}
-	
+
 	@Test
 	public void productMetaDataTest() throws InterruptedException {
-		resultPg=myaccountPg.doProductSearch("MacBook");
-		productDetailPg=resultPg.selectProduct("MacBook Pro");
-		Map<String,String>actualProductInfoMap=productDetailPg.getProductInformation();	
-		SoftAssert softAssert=new SoftAssert();
+		resultPg = myaccountPg.doProductSearch("MacBook");
+		productDetailPg = resultPg.selectProduct("MacBook Pro");
+		Map<String, String> actualProductInfoMap = productDetailPg.getProductInformation();
+		SoftAssert softAssert = new SoftAssert();
 		softAssert.assertEquals(actualProductInfoMap.get("Brand"), "Apple");
 		softAssert.assertEquals(actualProductInfoMap.get("Product Code"), "Product 18");
 		softAssert.assertEquals(actualProductInfoMap.get("Reward Points"), "800");
@@ -107,11 +97,10 @@ public class ProductDetailsPageTest extends TestBase {
 		softAssert.assertEquals(actualProductInfoMap.get("actualprice"), "$2,000.00");
 		softAssert.assertAll();
 	}
-	
-	
-  @AfterClass
-  public void afterClass() throws InterruptedException {
-	  myaccountPg.clickLogoutLink();
+
+	@AfterClass
+	public void afterClass() throws InterruptedException {
+		myaccountPg.clickLogoutLink();
 		logoutPg.waitForPageLoad(2000);
 		Assert.assertEquals(logoutPg.getTitle(), Constants.ACCOUNT_LOGOUT_PAGE_TITLE);
 		log.info("Click on Continue button in logout page");
@@ -119,6 +108,6 @@ public class ProductDetailsPageTest extends TestBase {
 
 		homePg.waitForPageLoad(2000);
 		Assert.assertEquals(homePg.getTitle(), Constants.HOME_PAGE_TITLE);
-  }
+	}
 
 }

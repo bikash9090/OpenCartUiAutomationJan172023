@@ -34,7 +34,6 @@ public class WebDriverFactory {
 	public ResourceBundle rb;// to read config.properties
 	public static String highlight;
 	// Singleton
-
 	// Only one instance of the class can exist at a time
 
 	private static final WebDriverFactory instance = new WebDriverFactory();
@@ -74,46 +73,42 @@ public class WebDriverFactory {
 				if (browser.equalsIgnoreCase(Constants.FIREFOX)) {
 
 					FirefoxOptions ffOptions = setFFOptions();
-
 					driver = new FirefoxDriver(ffOptions);
-
 					tlDriver.set(driver);
 
 				} else if (browser.equalsIgnoreCase(Constants.CHROME)) {
 
 					ChromeOptions chromeOptions = setChromeOptions();
-
 					driver = new ChromeDriver(chromeOptions);
-
 					tlDriver.set(driver);
 
 				} else if (browser.equalsIgnoreCase(Constants.IE)) {
 
 					InternetExplorerOptions ieOptions = setIEOptions();
-
 					driver = new InternetExplorerDriver(ieOptions);
-
 					tlDriver.set(driver);
 
 				} else if (browser.equalsIgnoreCase(Constants.EDGE)) {
 
 					EdgeOptions edgeopt = setEdgeOptions();
-
 					driver = new EdgeDriver(edgeopt);
 
 				} else if (browser.equalsIgnoreCase("headless")) {
+
 					ChromeOptions coptions = getChromeOptions();
 					driver = new ChromeDriver(coptions);
 					tlDriver.set(driver);
+
 				} else if (browser.equalsIgnoreCase("incognito")) {
+
 					ChromeOptions coptions = getChromeOptions();
 					driver = new ChromeDriver(coptions);
 					tlDriver.set(driver);
+
 				} else {
+
 					ChromeOptions chromeOptions = setChromeOptions();
-
 					driver = new ChromeDriver(chromeOptions);
-
 					tlDriver.set(driver);
 				}
 

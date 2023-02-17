@@ -11,7 +11,7 @@ import com.qa.opencart.utils.WebDriverUtils;
 
 public class LogoutPage extends WebDriverUtils{
 
-	private Logger log=LogManager.getLogger(LogoutPage.class.getName());
+	private Logger log = LogManager.getLogger(LogoutPage.class.getName());
 	JavaScriptUtils jsUtils;
 	public LogoutPage(WebDriver driver) {
 		super(driver);
